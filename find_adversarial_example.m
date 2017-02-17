@@ -10,6 +10,7 @@ function x_adv = find_adversarial_example(x, D, y_target)
 % @returns x_adv Example which linear classifier classifies in
 %   y_target with minimum Euclidean distance to original example.
   
+  x_size = size(x, 1)
   y = D*x;
   
   % For R2016b and later
