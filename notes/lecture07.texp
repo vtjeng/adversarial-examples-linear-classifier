@@ -1,0 +1,221 @@
+\documentclass{beamer}
+\usepackage{movie15,multicol,relsize,xstring,alltt}
+\usepackage{russt}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\tikzstyle{block} = [draw, fill=white, rectangle, 
+    minimum height=3em, minimum width=6em]
+\tikzstyle{sum} = [draw, fill=blue!20, circle, node distance=1cm]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+\graphicspath{{.}{./images/}}
+
+\title{Lecture 7: \\Applications of Least-Squares}
+\date{October 2, 2012}
+
+\begin{document}
+
+\include{../titleslide}
+
+\begin{frame}
+\frametitle{Overview of the Course}
+
+\begin{itemize}
+\item Part 1: Abstractions and Linear Algebra
+\begin{itemize}
+\item Signals as vectors, Systems as linear maps (matrices)
+\item Properties of Linearity
+\item Matrix Decompositions
+\item Least-squares Optimization
+\end{itemize}
+\item Part 2: Linear Time-Invariant Systems 
+\begin{itemize}
+\item Convolution
+\item Frequency Domain
+\item Discrete-time Fourier Transform
+\item Z Transform
+\item Continuous-time Fourier Transform
+\item Laplace Transform
+\item Filter Design, Stability Analysis, Feedback Control, \ldots
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{This week}
+
+\bigskip
+Today:
+\begin{itemize}
+\item More discussion about least squares
+\item Applications and Examples 
+\end{itemize}
+
+\bigskip
+Wednesday is Quiz 1 (details on front page of website)
+
+\bigskip
+Thursday: Start transition from Linear Algebra to LTI Systems
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Goals and Expectations for Linear Algebra}
+
+\begin{itemize}
+\item Linear Algebra as a tool
+\item We will \emph{\color{MITred}not} ask you to:
+\begin{itemize}
+\item Solve for eigenvectors / eigenvalues
+\item Invert a matrix
+\item Factor a matrix
+\end{itemize}
+\item We \emph{\color{MITred}do} expect you to:
+\begin{itemize}
+\item Understand when to use these tools
+\item Understand their properties
+\item Recognize a valid solution (e.g. ``if MATLAB were to tell you
+  the wrong thing, would you know?'')
+\end{itemize}
+\item 20 questions and Practice Quiz give examples
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Least Squares}
+\centerline{\small{(Will review concepts on the blackboard)}}
+
+\begin{center}
+\begin{matlabFigure}[width=.9\textwidth]
+cd ..;
+plot_quad;
+p = get(gcf,'PaperPosition'); p(4) = p(4)/2;
+set(gcf,'PaperPosition',p);
+subplot(1,2,2); axis off;
+\end{matlabFigure}
+\end{center}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Example: Fitting a line to data}
+
+\begin{center}
+\begin{matlabFigure}[width=.7\textwidth]
+cd ..;
+fit_line;
+\end{matlabFigure}
+\end{center}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Character Recognition}
+
+
+\begin{center}
+\begin{matlabFigure}[width=.9\textwidth]
+cd ..;
+sample_images;
+\end{matlabFigure}
+\end{center}
+
+\end{frame}
+
+%\begin{frame}
+%\frametitle{Input (``Trajectory'') Design}
+%
+%Finding inputs of small norm: the \red{minimum-fuel} problem. 
+%
+%\bigskip
+%
+%It can be formulated as a constrained least squares problem:
+%\[
+%\text{minimize }_{u[1],\ldots,u[N]} \quad \|u\|^2 \qquad \mbox{ subject to }  
+%\left\{
+%\begin{array}{rl}
+%D u &= y   \\
+%y[N]&= y_{desired}
+%\end{array}
+%\right.
+%\]
+%
+%\end{frame}
+
+
+\begin{frame}
+\frametitle{Approximate Inverses}
+
+\begin{center}
+\begin{tikzpicture}[auto, node distance=3cm,>=latex']
+ \node (input) {};
+ \node [block, right of=input,scale=.6] (system)
+ {{\Huge $D$}};
+ \draw [->] (input) -- node[text width=2cm, text centered] {perfect\\ image} (system);
+ \node [block,right of=system,scale=.6] (deblur) {{\Huge $D^{-1}$}};
+ \draw [->] (system) -- node[text width=2cm, text centered] {blurry\\ image} (deblur); 
+ \node [right of=deblur] (output) {};
+ \draw [->] (deblur) -- node[text width=2cm, text centered] {recovered image} (output);
+\end{tikzpicture}
+\end{center}
+
+%\uncover<2->{
+\bigskip
+\hfill 
+\includegraphics[width=.4\textwidth]{../lecture03/images/toy}
+\hfill
+\includegraphics[width=.4\textwidth]{../lecture03/images/toy_deblur}
+\hfill\
+%}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Application: Approximate Inverses}
+
+What if $D$ is not invertible?  (Not even square?)
+
+Taking
+$$\min_u || Du - y_d ||_2^2$$
+yields
+$$u = (D^T D)^{-1} D^T y_d.$$
+Can be thought of as an approximate (in the least-squares sense) inverse: 
+
+\begin{center}
+\begin{tikzpicture}[auto, node distance=3cm,>=latex']
+ \node (input) {};
+ \node [block, right of=input,scale=.6] (system)
+ {{\Huge $D$}};
+ \draw [->] (input) -- node[text width=2cm, text centered] {perfect\\ image} (system);
+ \node [block,right of=system,node distance=4cm,scale=.6] (deblur) {{\Huge $(D^T D)^{-1}D^T$}};
+ \draw [->] (system) -- node[text width=2cm, text centered] {blurry\\ image} (deblur); 
+ \node [right of=deblur] (output) {};
+ \draw [->] (deblur) -- node[text width=2cm, text centered] {recovered image} (output);
+\end{tikzpicture}
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Tomorrow's Quiz}
+
+Wednesday, October 3, from 7:30pm to 9:30pm in room 6-120.  
+
+\begin{itemize}
+\item Covers material up to last Thursday's lecture (Least Squares).
+\item The quiz is closed book.  You are allowed to bring 1 sheet (8.5 x 11, front and back) of handwritten notes.  
+\item There is no recitation on Wednesday
+\item {\color{MITred}Review Session}: Tuesday at 7pm at block office hours.  
+\item Additional TA office hours:
+\begin{itemize}
+\item Tuesday, 4:15-6pm, in the Stata basement
+\item Wednesday, 11am-12, in 34-301
+\item Wednesday, 2-3pm, in 34-301
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\end{document}
+

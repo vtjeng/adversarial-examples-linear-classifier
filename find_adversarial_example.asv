@@ -1,0 +1,11 @@
+function x_adv = find_adversarial_example(x, D, y_target)
+% FIND_ADVERSARIAL_EXAMPLE Given a linear classifier, finds the 
+%   adversarial example with minimum Euclidean distance to the original
+%   example with a specified target label.
+%
+% @param x Original example, specified as k*1 double.
+% @param D Linear classifier where output label y=argmax(D
+% @param y_target
+% @returns x_adv Adversarial example, 
+
+end
