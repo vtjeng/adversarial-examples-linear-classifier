@@ -3,7 +3,7 @@ function view_images(x, assigned_labels, correct_labels, num_rows, ...
 
 for i=1:num_rows*num_columns
   subplot(num_rows, num_columns, i);
-  imagesc(reshape(x(:,i),28,28));
+  imagesc(reshape(x(:,i),28,28), [0, 255]);
   colormap gray;
   if assigned_labels(i) == correct_labels(i)
     color = '\color{black}';

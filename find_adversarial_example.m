@@ -18,12 +18,13 @@ function x_adv = find_adversarial_example(x, D, y_target)
   % For R2016a and earlier
   A = bsxfun(@minus, D, D(y_target+1, :));
   
-  margin = sum(abs(A), 2)/(255*2); % deals with shift in relative values
+  margin = sum(abs(A), 2)/(2); % deals with shift in relative values
                                    % due to rounding
   
   b = -(y - y(y_target+1)) - margin;
   lb = -x;
-  ub = 1-x;
+  ub = 255-x;
+  % you do have to specify min and max!!
   
   %% use gurobi solver
   model.A = sparse(A);
@@ -37,5 +38,5 @@ function x_adv = find_adversarial_example(x, D, y_target)
   model.Q = sparse(eye(x_size));
   
   result = gurobi(model);
-  x_adv = uint8(255*(x + result.x));
+  x_adv = uint16(clamp(x + result.x, 0, 255));
 end
