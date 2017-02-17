@@ -37,5 +37,5 @@ function x_adv = find_adversarial_example(x, D, y_target)
   model.Q = sparse(eye(x_size));
   
   result = gurobi(model);
-  x_adv = int8(clamp(255*(x + result.x), 0, 255));
+  x_adv = uint8(255*(x + result.x));
 end
