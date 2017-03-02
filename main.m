@@ -11,7 +11,7 @@ num_samples=num_rows*num_columns;
 target_label=0;
 for idx = 1:num_samples
   x = Xtest(:, idx);
-  x_adv = find_adversarial_example(x, D, target_label)
+  x_adv = find_adversarial_example(x, D, target_label);
   e(:, idx) = double(x_adv)-x;
   Xtest_noisy(:, idx) = double(x_adv);
 end
